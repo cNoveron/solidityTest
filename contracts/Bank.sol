@@ -9,5 +9,7 @@ contract Bank is IBank, CompoundInterest {
 
     function withdraw(uint256 amount) external returns (uint256);
 
-    function getBalance() external view returns (uint256);
+    function getBalance() external view returns (uint256) {
+        return earned(msg.sender);
+    }
 }

@@ -109,8 +109,8 @@ contract CompoundInterest is ReentrancyGuard {
         }
     }
 
-    function exit() external {
-        withdraw(_balances[msg.sender]);
+    function exit(uint256 amount) external {
+        withdraw(amount);
         getReward();
     }
 
