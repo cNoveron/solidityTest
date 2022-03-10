@@ -25,7 +25,7 @@ interface IBank {
      * @param amount - the amount of the given token to deposit.
      * @return - true if the deposit was successful, otherwise revert.
      */
-    function deposit(uint256 amount) external payable returns (bool);
+    function deposit(uint256 amount) virtual external payable returns (bool);
 
     /**
      * The purpose of this function is to allow end-users to withdraw a given
@@ -37,12 +37,12 @@ interface IBank {
      * @return - the amount that was withdrawn plus interest upon success,
      *           otherwise revert.
      */
-    function withdraw(uint256 amount) external returns (uint256);
+    function withdraw(uint256 amount) virtual external returns (uint256);
 
     /**
      * The purpose of this function is to return the balance that the caller
      * has in their own account (including interest).
      * @return - the value of the caller's balance with interest, excluding debts.
      */
-    function getBalance() external view returns (uint256);
+    function getBalance() virtual external view returns (uint256);
 }

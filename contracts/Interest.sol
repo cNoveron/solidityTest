@@ -94,7 +94,7 @@ contract CompoundInterest is ReentrancyGuard {
         emit Staked(msg.sender, amount);
     }
 
-    function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
+    function _withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
         require(amount > 0, "Cannot withdraw 0");
         _totalSupply = _totalSupply.sub(amount);
         _balances[msg.sender] = _balances[msg.sender].sub(amount);
@@ -112,7 +112,7 @@ contract CompoundInterest is ReentrancyGuard {
     }
 
     function exit(uint256 amount) public {
-        withdraw(amount);
+        _withdraw(amount);
         getReward();
     }
 
