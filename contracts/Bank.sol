@@ -5,7 +5,11 @@ import "./Interest.sol";
 
 contract Bank is IBank, CompoundInterest {
 
-    function deposit(uint256 amount) external payable returns (bool);
+    function deposit(uint256 amount) external payable returns (bool) {
+        stake(amount);
+        emit Deposit(msg.sender, msg.value);
+        return true;
+    }
 
     function withdraw(uint256 amount) external returns (uint256) {
         uint256 amountToWithdraw = amount;
