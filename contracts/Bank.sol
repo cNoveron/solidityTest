@@ -7,7 +7,13 @@ contract Bank is IBank, CompoundInterest {
 
     function deposit(uint256 amount) external payable returns (bool);
 
-    function withdraw(uint256 amount) external returns (uint256);
+    function withdraw(uint256 amount) external returns (uint256) {
+        uint256 amountToWithdraw = amount;
+        if (amount == 0) amountToWithdraw = balanceOf(msg.sender);
+        exit(amountToWithdraw);
+        emit Withdraw(msg.sender, msg.value);
+        return earnedByAmount(msg.sender, amountToWithdraw);
+    }
 
     function getBalance() external view returns (uint256) {
         return earned(msg.sender);

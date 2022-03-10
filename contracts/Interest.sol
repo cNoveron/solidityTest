@@ -66,6 +66,10 @@ contract CompoundInterest is ReentrancyGuard {
         return _balances[account].mul(rewardPerToken().sub(userRewardPerTokenPaid[account])).div(1e18).add(rewards[account]);
     }
 
+    function earnedByAmount(address account, uint256 amount) public view returns (uint256) {
+        return amount.mul(rewardPerToken().sub(userRewardPerTokenPaid[account])).div(1e18).add(rewards[account]);
+    }
+
     function getRewardForDuration() external view returns (uint256) {
         return rewardRate.mul(rewardsDuration);
     }
