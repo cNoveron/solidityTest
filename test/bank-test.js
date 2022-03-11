@@ -28,10 +28,20 @@ describe("Bank contract", () => {
 
   describe("deposit", async () => {
     it("deposit eth", async () => {
+      let startBlock = await ethers.provider.getBlockNumber();
+      let timestamp = (await ethers.provider.getBlock(startBlock)).timestamp;
+      console.log(timestamp);
       let amountBefore = await ethers.provider.getBalance(bank.address);
       let amount = ethers.utils.parseEther('10.0');
       await bank1.deposit(amount, { value: amount });
       expect(await ethers.provider.getBalance(bank.address)).equals(amountBefore.add(amount));
+      console.log(await bank1.lastTimeRewardApplicable());
+      console.log(await bank1.lastUpdateTime());
+      console.log(await bank1.rewardPerToken());
+      console.log(await bank1.balanceOf(acc1.address));
+      console.log(await bank1.userRewardPerTokenPaid(acc1.address));
+      console.log(await bank1.rewards(acc1.address));
+      console.log(await bank1.earned(acc1.address));
       expect(await bank1.getBalance()).equals(amount);
     });
   });
@@ -51,6 +61,7 @@ describe("Bank contract", () => {
       let amount = ethers.utils.parseEther('100');
       await bank1.deposit(amount, {value: amount});
       await mineBlocks(99);
+      console.log(await bank1.balanceOf(acc1.address));
       await expect(bank1.withdraw(ethers.utils.parseEther('100')))
         .to.emit(bank, "Withdraw")
         .withArgs(await acc1.getAddress(), ethers.utils.parseEther('103'));

@@ -14,8 +14,11 @@ contract Bank is IBank, CompoundInterest {
 
     function withdraw(uint256 amount) override external returns (uint256) {
         uint256 principalToWithdraw = amount;
-        if (amount == 0) principalToWithdraw = balanceOf(msg.sender);
-        uint256 totalToWithdraw = amount.add(earnedByAmount(msg.sender, principalToWithdraw));
+        uint256 totalToWithdraw = amount.add(rewards[msg.sender]);
+        if (amount == 0) {
+            principalToWithdraw = balanceOf(msg.sender);
+            totalToWithdraw = principalToWithdraw;
+        }
         exit(principalToWithdraw);
         emit Withdraw(msg.sender, totalToWithdraw);
         return totalToWithdraw;

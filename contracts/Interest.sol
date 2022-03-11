@@ -39,12 +39,9 @@ contract CompoundInterest is ReentrancyGuard {
     }
 
     function rewardPerToken() public view returns (uint256) {
-        if (_totalSupply == 0) {
-            return rewardPerTokenStored;
-        }
         return
             rewardPerTokenStored.add(
-                lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate).mul(1e18)
+                lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate)
             );
     }
 
