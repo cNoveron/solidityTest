@@ -12,8 +12,6 @@ contract CompoundInterest is ReentrancyGuard {
 
     /* ========== STATE VARIABLES ========== */
 
-    IERC20 public rewardsToken;
-    IERC20 public stakingToken;
     uint256 public periodFinish = 0;
     uint256 public rewardRate = 0;
     uint256 public rewardsDuration = 60 days;
@@ -25,16 +23,6 @@ contract CompoundInterest is ReentrancyGuard {
 
     uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
-
-    /* ========== CONSTRUCTOR ========== */
-
-    constructor(
-        address _rewardsToken,
-        address _stakingToken
-    ) public {
-        rewardsToken = IERC20(_rewardsToken);
-        stakingToken = IERC20(_stakingToken);
-    }
 
     /* ========== VIEWS ========== */
 
@@ -74,23 +62,12 @@ contract CompoundInterest is ReentrancyGuard {
 
     /* ========== MUTATIVE FUNCTIONS ========== */
 
-    function stakeWithPermit(uint256 amount, uint deadline, uint8 v, bytes32 r, bytes32 s) external nonReentrant updateReward(msg.sender) {
-        require(amount > 0, "Cannot stake 0");
-        _totalSupply = _totalSupply.add(amount);
-        _balances[msg.sender] = _balances[msg.sender].add(amount);
-
-        // permit
-        IUniswapV2ERC20(address(stakingToken)).permit(msg.sender, address(this), amount, deadline, v, r, s);
-
-        stakingToken.safeTransferFrom(msg.sender, address(this), amount);
-        emit Staked(msg.sender, amount);
-    }
 
     function stake(uint256 amount) public nonReentrant updateReward(msg.sender) {
         require(amount > 0, "Cannot stake 0");
         _totalSupply = _totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
-        stakingToken.safeTransferFrom(msg.sender, address(this), amount);
+        // stakingToken.safeTransferFrom(msg.sender, address(this), amount);
         emit Staked(msg.sender, amount);
     }
 
@@ -98,7 +75,7 @@ contract CompoundInterest is ReentrancyGuard {
         require(amount > 0, "Cannot withdraw 0");
         _totalSupply = _totalSupply.sub(amount);
         _balances[msg.sender] = _balances[msg.sender].sub(amount);
-        stakingToken.safeTransfer(msg.sender, amount);
+        payable(msg.sender).transfer(amount);
         emit Withdrawn(msg.sender, amount);
     }
 
@@ -106,7 +83,7 @@ contract CompoundInterest is ReentrancyGuard {
         uint256 reward = rewards[msg.sender];
         if (reward > 0) {
             rewards[msg.sender] = 0;
-            rewardsToken.safeTransfer(msg.sender, reward);
+            payable(msg.sender).transfer(reward);
             emit RewardPaid(msg.sender, reward);
         }
     }
