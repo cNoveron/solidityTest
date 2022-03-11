@@ -17,7 +17,7 @@ contract Bank is IBank, CompoundInterest {
         uint256 totalToWithdraw = amount.add(rewards[msg.sender]);
         if (amount == 0) {
             principalToWithdraw = balanceOf(msg.sender);
-            totalToWithdraw = principalToWithdraw;
+            totalToWithdraw = balanceOf(msg.sender).add(earned(msg.sender));
         }
         exit(principalToWithdraw);
         emit Withdraw(msg.sender, totalToWithdraw);
