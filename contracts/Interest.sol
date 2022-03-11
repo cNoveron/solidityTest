@@ -12,8 +12,8 @@ contract CompoundInterest is ReentrancyGuard {
 
     /* ========== STATE VARIABLES ========== */
 
-    uint256 public periodFinish = 0;
-    uint256 public rewardRate = 0;
+    uint256 public periodFinish = 1649655989;
+    uint256 public rewardRate = 3;
     uint256 public rewardsDuration = 60 days;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
@@ -44,7 +44,7 @@ contract CompoundInterest is ReentrancyGuard {
         }
         return
             rewardPerTokenStored.add(
-                lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate).mul(1e18).div(_totalSupply)
+                lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate).mul(1e18)
             );
     }
 
