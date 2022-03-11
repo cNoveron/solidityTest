@@ -72,11 +72,12 @@ contract CompoundInterest is ReentrancyGuard {
     }
 
     function _withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
+        require(_balances[msg.sender] > 0, "no balance");
         require(amount > 0, "Cannot withdraw 0");
-        require(amount < _balances[msg.sender], "amount exceeds balance");
+        require(amount <= _balances[msg.sender], "amount exceeds balance");
         // _totalSupply = _totalSupply.sub(amount);
         (bool success, uint256 newBalance) = _balances[msg.sender].trySub(amount);
-        require(success, "no balance");
+        require(success, "underflow");
         _balances[msg.sender] = newBalance;
         payable(msg.sender).transfer(amount);
         emit Withdrawn(msg.sender, amount);
