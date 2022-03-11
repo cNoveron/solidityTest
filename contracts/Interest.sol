@@ -65,7 +65,7 @@ contract CompoundInterest is ReentrancyGuard {
 
     function stake(uint256 amount) public nonReentrant updateReward(msg.sender) {
         require(amount > 0, "Cannot stake 0");
-        _totalSupply = _totalSupply.add(amount);
+        // _totalSupply = _totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
         // stakingToken.safeTransferFrom(msg.sender, address(this), amount);
         emit Staked(msg.sender, amount);
@@ -73,8 +73,10 @@ contract CompoundInterest is ReentrancyGuard {
 
     function _withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
         require(amount > 0, "Cannot withdraw 0");
-        _totalSupply = _totalSupply.sub(amount);
-        _balances[msg.sender] = _balances[msg.sender].sub(amount);
+        // _totalSupply = _totalSupply.sub(amount);
+        (bool success, uint256 newBalance) = _balances[msg.sender].trySub(amount);
+        require(success, "no balance");
+        _balances[msg.sender] = newBalance;
         payable(msg.sender).transfer(amount);
         emit Withdrawn(msg.sender, amount);
     }
